@@ -11,14 +11,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.stage.Screen;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -29,13 +23,13 @@ import javax.swing.Timer;
  */
 public class Frame_W extends JPanel implements KeyListener{
     
-    private final int frame_height = 600;
-    private final int frame_width = 800;
-    private final int ground_position = frame_height - 50;
-    private final int dino_start = ground_position - 50;
-    Dino dino = new Dino(dino_start);    
+    private final int frame_height;
+    private final int frame_width;
+    private final int ground_position;
+    private final int dino_start;
+    Dino dino;   
     Obstracle[] obstracle = new Obstracle[2];
-    Ground ground = new Ground(ground_position,frame_width);
+    Ground ground;
     Timer timer;
     Timer timerJ;
     private boolean isIntro=true;
@@ -43,12 +37,19 @@ public class Frame_W extends JPanel implements KeyListener{
     private volatile boolean isObstracleRender=false;
     static int score=0;
     private boolean isGameEnd=false;
-    Frame_W(){
+    Frame_W(int sWidth,int sHeight){
         setFocusable(true);
+        frame_width=sWidth;
+        frame_height=sHeight;
+        ground_position = frame_height - 50;
+        dino_start = ground_position - 50;
         setPreferredSize(new Dimension(frame_width,frame_height));
+        setOpaque(false);
         addKeyListener(this);
-        obstracle[0]=new Obstracle(ground_position, frame_width,Color.RED,0);
-        obstracle[1]=new Obstracle(ground_position, frame_width,Color.BLUE,1);
+        dino = new Dino(dino_start); 
+        ground = new Ground(ground_position,frame_width);
+        obstracle[0]=new Obstracle(ground_position, frame_width,0);
+        obstracle[1]=new Obstracle(ground_position, frame_width,1);
         timer= new Timer(30,new IntroAction());
         timerJ= new Timer(40,new JumpAction());
         start_game_time();
@@ -101,10 +102,11 @@ public class Frame_W extends JPanel implements KeyListener{
                 timer.stop();
                 timerJ.stop();
                 isGameEnd=true;
-                JOptionPane.showMessageDialog(null, "Game Over");
-                System.exit(0);
+                      
+                JOptionPane.showMessageDialog(null, "Game Over \n\tScore:"+score);
+                System.exit(0);   
             }
-        }
+        } 
         
         public void check_score(int x){
             if(x==0){

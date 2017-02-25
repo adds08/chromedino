@@ -5,7 +5,10 @@
  */
 package chrome.dino.game;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -15,12 +18,18 @@ import javax.swing.SwingUtilities;
  */
 public class ChromeDinoGame extends JFrame{
     
-    Frame_W gameFrame = new Frame_W();
-    
+    Frame_W gameFrame;
+    final Dimension screen_resolution = Toolkit.getDefaultToolkit().getScreenSize();
+    final int screen_width = screen_resolution.width;
+    final int screen_height = screen_resolution.height;
     ChromeDinoGame(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        gameFrame = new Frame_W(screen_width,screen_height);
+        setUndecorated(true);
+        setBackground(new Color(0,0,0,40));
+        
         getContentPane().add(gameFrame);
+        setVisible(true);
         pack();
         setLocationRelativeTo(null);
     }
@@ -30,6 +39,7 @@ public class ChromeDinoGame extends JFrame{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                
                 new ChromeDinoGame();
             }
         });

@@ -1,35 +1,43 @@
-/*
+/* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package chrome.dino.game;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 public class Obstracle implements RenderObjects{
     
     private int xpos;
     private final int ypos;
-    private final int xvel=6;
+    private double xvel=3;
     private int yheight=10;
     private final int screenwidth;
     private final int obs_id;
     private final int set_gap = 60;
     Random random1 = new Random();
-    Random random2 = new Random();
     Rectangle obstracleRect;
-    private final Color color;
-    
-    Obstracle(int ypos,int screenwidth,Color color,int obsid){
+    Image imgObs;
+    Obstracle(int ypos,int screenwidth,int obsid){
         this.obs_id=obsid;
-        this.color=color;
+        this.xpos=screenwidth; 
         this.screenwidth=screenwidth;
         this.ypos=ypos;
         this.yheight=50;
+        try {
+            imgObs = ImageIO.read(new File("res/images/snakePic.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Obstracle.class.getName()).log(Level.SEVERE, null, ex);
+        }
         reset_start();
     }
     
@@ -39,21 +47,22 @@ public class Obstracle implements RenderObjects{
     
     @Override
     public void render_objects(Graphics g) {
-        g.setColor(this.color);
-        g.fillRect(xpos, ypos-yheight, 30, yheight);
-        obstracleRect=new Rectangle(xpos, ypos-yheight, 30, yheight);
+        g.drawImage(imgObs, xpos, ypos-yheight, null);
+        obstracleRect=new Rectangle(xpos, ypos-yheight, 44, yheight);
     }
 
     public boolean movable() {
         if(obs_id==0){
-            if(xpos>-20){
-                xpos = xpos - xvel;
+            if(xpos>-50){
+                xpos = xpos - (int)xvel;
+                if(xvel<=5)xvel+=0.25;
                 return true;
             }      
         }
         if(obs_id==1){
             if(xpos>-10){
-                xpos = xpos - xvel;
+                xpos = xpos - (int)xvel;
+                if(xvel<=9)xvel+=0.16;
                 return true;
             }
         }
@@ -61,14 +70,9 @@ public class Obstracle implements RenderObjects{
         return true;
     }
     private void reset_start(){
-        if(obs_id==0){
-            xpos=screenwidth+random1.nextInt(40);
-        }
-        else{
-            xpos=screenwidth+random2.nextInt(40)+ 100;
-        }
+            xvel=3;
+            xpos =(screenwidth)+(random1.nextInt(60)+70);
     }
-
     @Override
     public boolean movable(String x) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
